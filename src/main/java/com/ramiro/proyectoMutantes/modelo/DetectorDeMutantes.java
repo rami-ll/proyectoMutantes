@@ -4,10 +4,14 @@ package com.ramiro.proyectoMutantes.modelo;
 import com.ramiro.proyectoMutantes.persitence.Genes;
 import com.ramiro.proyectoMutantes.persitence.GenesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import rx.Single;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.zip.DataFormatException;
 
 @Service
 public class DetectorDeMutantes {
@@ -28,18 +32,35 @@ public class DetectorDeMutantes {
         this.genesMutantes.add(Pattern.compile("[G]{4,}"));
     }
 
-    public boolean esMutante(Genes genes){
+    public Single<ResponseEntity> esMutanteService(Genes genes){
+        return Single.create(
+            singleSubscriber -> {
+                this.esMutante(genes);
+                singleSubscriber.onSuccess(setResponse(genes));
+            }
+        );
+    }
+
+    private ResponseEntity setResponse(Genes genes){
+        if(genes.isEsMutante()) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    public Genes esMutante(Genes genes){
         char[][] matrizGenes;
         ArrayList<String> muestra = genes.getDna();
         if (inputValido(muestra)){
             matrizGenes = generarMatriz(muestra);
             genes.setEsMutante(validacionDiagonal(matrizGenes) || validacionFilas(matrizGenes) || validacionLienas(muestra));
             this.guardarMuestra(genes);
-            return genes.isEsMutante();
         }
         else{
-            return false;
+           genes.setEsMutante(false);
         }
+        return genes;
     }
 
     private boolean inputValido(ArrayList<String> genes){
@@ -65,6 +86,8 @@ public class DetectorDeMutantes {
     private boolean validacionDiagonal(char[][] genes){
         ArrayList<String> cadenasDiagonales =new ArrayList<>();
         String genesDiagonales = "";
+        String genesDiagonalesSup = "";
+        String genesDiagonalesInf = "";
         int cantidadMinima = 4;
         int largo = genes.length;
         //Diagonal principal
@@ -73,22 +96,18 @@ public class DetectorDeMutantes {
         }
         cadenasDiagonales.add(genesDiagonales);
         genesDiagonales = "";
-        //Diagonales superiores
+        //Diagonales laterales
         for (int i = 1; largo - i >= cantidadMinima; i++){
             for (int j = 0; j + i < largo; j++){
-                genesDiagonales = genesDiagonales + genes[j][j+i];
+                genesDiagonalesSup = genesDiagonalesSup + genes[j][j+i];
+                genesDiagonalesInf = genesDiagonalesInf + genes[j+i][j];
             }
-            cadenasDiagonales.add(genesDiagonales);
-            genesDiagonales = "";
+            cadenasDiagonales.add(genesDiagonalesSup);
+            cadenasDiagonales.add(genesDiagonalesInf);
+            genesDiagonalesSup = "";
+            genesDiagonalesInf = "";
         }
-        //Diagonales inferiores
-        for (int i = 1; largo - i >= cantidadMinima; i++){
-            for (int j = 0; j + i < largo; j++){
-                genesDiagonales = genesDiagonales + genes[j+i][j];
-            }
-            cadenasDiagonales.add(genesDiagonales);
-            genesDiagonales = "";
-        }
+
         return cadenasDiagonales.stream().anyMatch(gen -> validarCadenaGenes(gen));
     }
 

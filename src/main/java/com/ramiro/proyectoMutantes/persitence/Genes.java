@@ -2,11 +2,13 @@ package com.ramiro.proyectoMutantes.persitence;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 @Document(collection = "genes")
+@Component
 public class Genes implements Serializable {
 
     @Id
