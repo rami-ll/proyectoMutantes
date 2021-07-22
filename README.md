@@ -13,9 +13,9 @@ Se debe explicitar el header Content-Type: application/json, de lo contrario rec
     "path": "/stats"
 }
 
-Metodos disponibles:
+**Metodos disponibles:**
 
-/mutant
+**/mutant**
 
 HTTP method: POST
 
@@ -34,8 +34,9 @@ Ejemplo: ["ATGCGA","CTGCGC","TTATGT","AGAAGG","CACCTA","TCACTG"] (6 elementos de
 El servicio respondera con un status 200 en caso de que el dna suministrado sea el de un mutante y un 
 status 403 en los demas casos.
 
+Una cadena de genes corresponde a un mutante si posee 4 caracteres iguales consecutivos de forma lineal, horizontal y oblicua
 
-/stats
+**/stats**
 
 HTTP method: GET
 
