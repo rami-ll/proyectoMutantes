@@ -35,8 +35,8 @@ public class DetectorDeMutantes {
     public Single<ResponseEntity> esMutanteService(Genes genes){
         return Single.create(
             singleSubscriber -> {
-                this.esMutante(genes);
-                singleSubscriber.onSuccess(setResponse(genes));
+                Genes respuesta = this.esMutante(genes);
+                singleSubscriber.onSuccess(setResponse(respuesta));
             }
         );
     }
@@ -53,9 +53,14 @@ public class DetectorDeMutantes {
         char[][] matrizGenes;
         ArrayList<String> muestra = genes.getDna();
         if (inputValido(muestra)){
-            matrizGenes = generarMatriz(muestra);
-            genes.setEsMutante(validacionDiagonal(matrizGenes) || validacionFilas(matrizGenes) || validacionLienas(muestra));
-            this.guardarMuestra(genes);
+            Genes guardados = repository.findByDna(muestra);
+            if (guardados == null) {
+                matrizGenes = generarMatriz(muestra);
+                genes.setEsMutante(validacionDiagonal(matrizGenes) || validacionFilas(matrizGenes) || validacionLienas(muestra));
+                repository.save(genes);
+            } else {
+                return guardados;
+            }
         }
         else{
            genes.setEsMutante(false);
@@ -130,12 +135,6 @@ public class DetectorDeMutantes {
     private boolean validarCadenaGenes (String genes){
        return this.genesMutantes.stream().anyMatch(genMutante
                -> genMutante.matcher(genes).find());
-    }
-
-    private void guardarMuestra(Genes genes){
-        if (repository.findByDna(genes.getDna()) == null){
-            repository.save(genes);
-        }
     }
 
 

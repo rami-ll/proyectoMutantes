@@ -75,8 +75,8 @@ class ProyectoMutantesApplicationTests {
 		humano.add("GGAC");
 		humano.add("TTAG");
 		genesHumanos.setDna(humano);
-		detector.esMutante(genesHumanos);
-		assert !genesHumanos.isEsMutante();
+		Genes resultado = detector.esMutante(genesHumanos);
+		assert !resultado.isEsMutante();
 	}
 
 	@Test
@@ -89,8 +89,8 @@ class ProyectoMutantesApplicationTests {
 		personaConGenesDiagonales.add("TTAAGG");
 		personaConGenesDiagonales.add("TTAACA");
 		genesDiagonales.setDna(personaConGenesDiagonales);
-		detector.esMutante(genesDiagonales);
-		assert genesDiagonales.isEsMutante();
+		Genes resultado = detector.esMutante(genesDiagonales);
+		assert resultado.isEsMutante();
 	}
 
 	@Test
@@ -101,8 +101,8 @@ class ProyectoMutantesApplicationTests {
 		personaConGenesLineales.add("GGGG");
 		personaConGenesLineales.add("TTAA");
 		genesLineales.setDna(personaConGenesLineales);
-		detector.esMutante(genesLineales);
-		assert genesLineales.isEsMutante();
+		Genes resultado = detector.esMutante(genesLineales);
+		assert resultado.isEsMutante();
 	}
 
 	@Test
@@ -113,8 +113,8 @@ class ProyectoMutantesApplicationTests {
 		personaConGenesHorizontales.add("GGGT");
 		personaConGenesHorizontales.add("TTAT");
 		genesHorizontales.setDna(personaConGenesHorizontales);
-		detector.esMutante(genesHorizontales);
-		assert genesHorizontales.isEsMutante();
+		Genes resultado = detector.esMutante(genesHorizontales);
+		assert resultado.isEsMutante();
 	}
 
 	@Test
