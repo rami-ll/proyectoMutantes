@@ -4,6 +4,7 @@ Poryecto api rest spring boot
 La API Rest expuesta cuenta con dos metodos.
 
 **IMPORTANTE**
+
 Se debe explicitar el header Content-Type: application/json, de lo contrario recibiran como respuesta:
 {
     "timestamp": "2021-07-22T13:13:07.592+00:00",
