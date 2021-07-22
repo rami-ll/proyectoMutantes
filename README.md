@@ -3,6 +3,17 @@ Poryecto api rest spring boot
 
 La API Rest expuesta cuenta con dos metodos.
 
+**IMPORTANTE**
+Se debe explicitar el header Content-Type: application/json, de lo contrario recibiran como respuesta:
+{
+    "timestamp": "2021-07-22T13:13:07.592+00:00",
+    "status": 415,
+    "error": "Unsupported Media Type",
+    "path": "/stats"
+}
+
+Metodos disponibles:
+
 /mutant
 
 HTTP method: POST
@@ -10,7 +21,9 @@ HTTP method: POST
 request body:
 formato json
 
-{"dna":[]}
+{
+    "dna":[]
+}
 
 El campo dna es madatorio para consumir el servicio el mismo debera ser una lista de strings, 
 todas del mismo largo y la cantidad de caracteres por string debera ser igual a la catindad de items en la lista.
