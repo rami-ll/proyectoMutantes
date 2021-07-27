@@ -11,12 +11,12 @@ import rx.Single;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-import java.util.zip.DataFormatException;
+import java.util.stream.Collectors;
 
 @Service
 public class DetectorDeMutantes {
 
-    private final String  componentesValidos = "[A,T,C,G]";
+    private final String  componentesValidos = "[A,T,C,G,a,t,g,c]";
     private ArrayList<Pattern> genesMutantes;
     private Pattern pattern;
     @Autowired
@@ -53,6 +53,7 @@ public class DetectorDeMutantes {
         char[][] matrizGenes;
         ArrayList<String> muestra = genes.getDna();
         if (inputValido(muestra)){
+            muestra = (ArrayList<String>)muestra.stream().map(String::toUpperCase).collect(Collectors.toList());
             Genes guardados = repository.findByDna(muestra);
             if (guardados == null) {
                 matrizGenes = generarMatriz(muestra);
